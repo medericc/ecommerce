@@ -16,6 +16,8 @@ const ProductShow: React.FC = () => {
     promoCode: '',
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -28,19 +30,16 @@ const ProductShow: React.FC = () => {
   const [rotation, setRotation] = useState({ rotateX: 0, rotateY: 0 });
   const [lastRotation, setLastRotation] = useState({ rotateX: 0, rotateY: 0 });
 
-// Function to handle mouse movement over the image
-const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-  const { offsetWidth: width, offsetHeight: height } = e.currentTarget;
-  const { offsetX: x, offsetY: y } = e.nativeEvent;
-  const rotateX = ((y / height) - 0.5) * 30; // Augmente l'intensité
-  const rotateY = ((x / width) - 0.5) * -30; // Augmente l'intensité
-  setRotation({ rotateX, rotateY });
-};
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { offsetWidth: width, offsetHeight: height } = e.currentTarget;
+    const { offsetX: x, offsetY: y } = e.nativeEvent;
+    const rotateX = ((y / height) - 0.5) * 30;
+    const rotateY = ((x / width) - 0.5) * -30;
+    setRotation({ rotateX, rotateY });
+  };
 
-
-  // Function to handle mouse leaving the image area
   const handleMouseLeave = () => {
-    setLastRotation(rotation); // Memorize the last position
+    setLastRotation(rotation);
   };
 
   return (
@@ -68,10 +67,10 @@ const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
         transition={{ type: "spring", stiffness: 150, damping: 15 }}
       >
         <Image
-          src="/rose.jpg" // Update with actual image path
+          src="/rose.jpg"
           alt="Poster Example"
-          width={400} // Replace with actual width
-          height={600} // Replace with actual height
+          width={400}
+          height={600}
           className="w-full h-auto rounded shadow-md"
         />
       </motion.div>
@@ -85,10 +84,10 @@ const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
             {[1, 2, 3, 4, 5, 6].map((finish, index) => (
               <Image
                 key={index}
-                src={`/path-to-finish-image-${finish}.jpg`} // Replace with actual finish images
+                src={`/path-to-finish-image-${finish}.jpg`}
                 alt={`Finish ${finish}`}
-                width={100} // Replace with actual width
-                height={100} // Replace with actual height
+                width={100}
+                height={100}
                 className="w-full h-24 object-cover rounded cursor-pointer border border-gray-300 hover:border-black"
               />
             ))}
@@ -124,7 +123,55 @@ const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
             </div>
           ))}
         </div>
+
+        {/* Button to open similar images modal */}
+        <button
+          className="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => setIsModalOpen(true)}
+        >
+          Images similaires
+        </button>
       </div>
+
+   {/* Modal */}
+   {isModalOpen && (
+        <motion.div
+          className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-lg h-3/4 bg-white shadow-lg z-50 p-4 rounded-lg"
+          initial={{ opacity: 0, y: "100%" }}
+          animate={{ opacity: 1, y: "0%" }}
+          exit={{ opacity: 0, y: "100%" }}
+          transition={{ type: "spring", stiffness: 200, damping: 25 }}
+        >
+          <div className="relative w-full h-full overflow-y-auto">
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+              onClick={() => setIsModalOpen(false)}
+            >
+              &#10005;
+            </button>
+            <h2 className="text-2xl font-semibold mb-4">Images similaires</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[1, 2, 3, 4].map((image, index) => (
+                <Image
+                  key={index}
+                  src={`/path-to-similar-image-${image}.jpg`} // Update with actual similar images
+                  alt={`Similar Image ${image}`}
+                  width={200}
+                  height={150}
+                  className="w-full h-auto object-cover rounded shadow"
+                />
+              ))}
+            </div>
+            {/* Pas intéressé button */}
+            <button
+              className="mt-6 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+              onClick={() => setIsModalOpen(false)}
+            >
+              Pas intéressé
+            </button>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };
