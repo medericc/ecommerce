@@ -1,5 +1,7 @@
 "use client";
 import React, { useState } from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const ProductShow: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -22,6 +24,25 @@ const ProductShow: React.FC = () => {
     }));
   };
 
+  // Position states for 3D effect
+  const [rotation, setRotation] = useState({ rotateX: 0, rotateY: 0 });
+  const [lastRotation, setLastRotation] = useState({ rotateX: 0, rotateY: 0 });
+
+// Function to handle mouse movement over the image
+const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const { offsetWidth: width, offsetHeight: height } = e.currentTarget;
+  const { offsetX: x, offsetY: y } = e.nativeEvent;
+  const rotateX = ((y / height) - 0.5) * 30; // Augmente l'intensité
+  const rotateY = ((x / width) - 0.5) * -30; // Augmente l'intensité
+  setRotation({ rotateX, rotateY });
+};
+
+
+  // Function to handle mouse leaving the image area
+  const handleMouseLeave = () => {
+    setLastRotation(rotation); // Memorize the last position
+  };
+
   return (
     <div className="w-full min-h-screen mx-auto p-8 bg-white rounded-lg shadow-md grid grid-cols-3 gap-8">
       {/* Left Column - Product Information */}
@@ -34,14 +55,26 @@ const ProductShow: React.FC = () => {
         </p>
       </div>
 
-      {/* Middle Column - Image */}
-      <div className="flex flex-col items-center">
-        <img
-          src="/path-to-your-image.jpg" // Replace with actual image source
+      {/* Middle Column - Image with 3D Hover Effect */}
+      <motion.div 
+        className="flex flex-col items-center"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{ perspective: "1000px" }}
+        animate={{
+          rotateX: rotation.rotateX || lastRotation.rotateX,
+          rotateY: rotation.rotateY || lastRotation.rotateY,
+        }}
+        transition={{ type: "spring", stiffness: 150, damping: 15 }}
+      >
+        <Image
+          src="/rose.jpg" // Update with actual image path
           alt="Poster Example"
+          width={400} // Replace with actual width
+          height={600} // Replace with actual height
           className="w-full h-auto rounded shadow-md"
         />
-      </div>
+      </motion.div>
 
       {/* Right Column - Finish Selection and Form */}
       <div>
@@ -50,10 +83,12 @@ const ProductShow: React.FC = () => {
           <label className="block text-gray-700 font-semibold mb-2">Choisissez votre finition *</label>
           <div className="grid grid-cols-3 gap-2">
             {[1, 2, 3, 4, 5, 6].map((finish, index) => (
-              <img
+              <Image
                 key={index}
                 src={`/path-to-finish-image-${finish}.jpg`} // Replace with actual finish images
                 alt={`Finish ${finish}`}
+                width={100} // Replace with actual width
+                height={100} // Replace with actual height
                 className="w-full h-24 object-cover rounded cursor-pointer border border-gray-300 hover:border-black"
               />
             ))}

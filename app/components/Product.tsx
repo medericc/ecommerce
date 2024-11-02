@@ -6,21 +6,21 @@ export default function Home() {
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <ProductCard
-          imageSrc="/path/to/image1.jpg"
+          imageSrc="./images/rose.jpg"
           title="Petit format"
           price="69,99€"
           size="20 × 30cm"
           finishes={6}
         />
         <ProductCard
-          imageSrc="/path/to/image2.jpg"
+          imageSrc="./images/stella.jpg"
           title="Moyen format"
           price="109,99€"
           size="30 × 45cm"
           finishes={6}
         />
         <ProductCard
-          imageSrc="/path/to/image3.jpg"
+          imageSrc="./images/bleu.jpg"
           title="Grand format"
           price="159,99€"
           size="40 × 60cm"
